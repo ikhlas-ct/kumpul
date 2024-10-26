@@ -18,7 +18,7 @@ class SeminarProposal extends Model
         'ruangan_id',
         'status_prodi',
         'validasi_pembimbing',
-        'komentar_penguji_1', 
+        'komentar_penguji_1',
         'komentar_penguji_2',
     ];
     protected $casts = [
@@ -28,6 +28,11 @@ class SeminarProposal extends Model
     {
         return $this->belongsTo(MahasiswaBimbingan::class, 'mahasiswa_bimbingan_id');
     }
+  
+
+
+
+
     public function dosenPenguji1()
     {
         return $this->belongsTo(Dosen::class, 'dosen_penguji_1_id');
@@ -50,4 +55,11 @@ public function penilaianSeminars()
 {
     return $this->hasMany(PenilaianSeminar::class, 'seminar_proposal_id');
 }
+
+
+
+
+
+
 }
+

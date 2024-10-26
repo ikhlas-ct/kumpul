@@ -122,16 +122,16 @@ class KaprodiController extends Controller
         // Ambil semua dosen yang sudah menjadi pembimbing
         $dosenPembimbings = DosenPembimbing::with('dosen')->get();
         $totalDosenPembimbing = DosenPembimbing::count();
-    
+
         // Mengambil dosen yang belum menjadi pembimbing menggunakan Eloquent subquery
         $dosenBelumPembimbing = Dosen::whereDoesntHave('dosenPembimbings')->get();
-        // dd($dosenBelumPembimbing); 
-    
+        // dd($dosenBelumPembimbing);
+
         return view('pages.Prodi.pemilihanpembimbing', compact('dosenPembimbings', 'totalDosenPembimbing', 'dosenBelumPembimbing'));
     }
-    
-    
-    
+
+
+
     public function store_Pembimbing(Request $request)
     {
         // Validasi input dari form
@@ -143,7 +143,7 @@ class KaprodiController extends Controller
                     // Pastikan dosen tidak memiliki lebih dari satu entri untuk setiap jenis pembimbing
                     $countDosbing1 = DosenPembimbing::where('dosen_id', $value)->where('jenis_dosbing', 'pembimbing 1')->count();
                     $countDosbing2 = DosenPembimbing::where('dosen_id', $value)->where('jenis_dosbing', 'pembimbing 2')->count();
-    
+
                     if ($countDosbing1 > 0 || $countDosbing2 > 0) {
                         $fail('Dosen ini sudah menjadi pembimbing 1 atau pembimbing 2.');
                     }
@@ -151,16 +151,16 @@ class KaprodiController extends Controller
             ],
             'jenis_dosbing' => 'required|in:pembimbing 1,pembimbing 2',
         ]);
-    
+
         // Proses penyimpanan data baru
         DosenPembimbing::create([
             'dosen_id' => $request->dosen_id,
             'jenis_dosbing' => $request->jenis_dosbing,
         ]);
-    
+
         return redirect()->route('Pembimbing.dashboard')->with('success', 'Dosen Pembimbing berhasil ditambahkan.');
     }
-    
+
     public function edit_pembimbing($id)
     {
         // Ambil data dosen pembimbing berdasarkan ID
@@ -174,7 +174,7 @@ class KaprodiController extends Controller
             'dosens' => $dosens,
         ]);
     }
-    
+
 
 public function update_Pembimbing(Request $request, $id)
 {
@@ -214,13 +214,13 @@ public function update_Pembimbing(Request $request, $id)
             ->where('status_prodi', 'diproses')
             ->where('validasi_pembimbing', 'valid')
             ->get();
-    
+
         $dosens = Dosen::all();
         $ruangans = Ruangan::all();
-    
+
         return view('pages.Prodi.ajuansempro', compact('seminarProposals', 'dosens', 'ruangans'));
     }
-    
+
     public function atur_sempro($id)
     {
         $seminarProposal = SeminarProposal::findOrFail($id);
@@ -229,12 +229,12 @@ public function update_Pembimbing(Request $request, $id)
 
         return view('pages.Prodi.seminar_proposal_atur', compact('seminarProposal', 'dosens', 'ruangans'));
     }
-    
+
 
 public function setujuSempro(Request $request, $id)
 {
     $seminarProposal = SeminarProposal::findOrFail($id);
-    
+
     // Validasi data yang dikirimkan oleh user
     $request->validate([
         'ruangan_id' => 'required',
@@ -242,7 +242,7 @@ public function setujuSempro(Request $request, $id)
         'dosen_penguji_2_id' => 'required',
         'tanggal_waktu' => 'required|date',
     ]);
-    
+
     // Mengambil data dari permintaan untuk disimpan dalam seminar proposal
     $seminarProposal->ruangan_id = $request->ruangan_id;
     $seminarProposal->dosen_penguji_1_id = $request->dosen_penguji_1_id;
@@ -270,6 +270,7 @@ public function komprehensif_show()
     return view('pages.Prodi.ajuankompre', compact('SeminarKomprehensifs', 'dosens', 'ruangans'));
 }
 
+
 public function Komprehensif_sempro($id)
 {
     $SeminarKomprehensif = SeminarKomprehensif::findOrFail($id);
@@ -291,7 +292,7 @@ $request->validate([
     'dosen_penguji_2_id' => 'required',
     'tanggal_waktu' => 'required|date',
 ]);
-
+    
 // Mengambil data dari permintaan untuk disimpan dalam seminar proposal
 $SeminarKomprehensif->ruangan_id = $request->ruangan_id;
 $SeminarKomprehensif->dosen_penguji_1_id = $request->dosen_penguji_1_id;
@@ -301,7 +302,7 @@ $SeminarKomprehensif->status_prodi = 'diterima'; // Set status menjadi diterima
 
 $SeminarKomprehensif->save();
 
-return redirect()->route('prodi_seminar_kompre_index')->with('success', 'Pengaturan Jadwal Seminar Proposal Berhasil ditentukan ');
+return redirect()->route('seminar-kompre.index')->with('success', 'Pengaturan Jadwal Seminar Proposal Berhasil ditentukan ');
 
 }
 

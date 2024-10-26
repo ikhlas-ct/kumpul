@@ -5,9 +5,9 @@
 @if (FiturHelper::showKaprodi())
     <div>
         <div class="brand-logo d-flex align-items-center justify-content-between">
-            <a href="{{route('kaprodi.dashboard') }} class="text-nowrap logo-img">
+            <a href="{{route('kaprodi.dashboard') }}" class="text-nowrap logo-img">
                 <img src="{{ asset('assets/images/logos/logo1.png') }}" width="180" alt=""
-                style="margin-top: 20px; " />
+                style="margin-top: 20px;" />
             </a>
             <div class="close-btn d-xl-none d-block sidebartoggler cursor-pointer" id="sidebarCollapse">
                 <i class="ti ti-x fs-8"></i>
@@ -21,8 +21,7 @@
                     <span class="hide-menu">Home</span>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{route('kaprodi.dashboard') }}"
-                        aria-expanded="false">
+                    <a class="sidebar-link" href="{{route('kaprodi.dashboard') }}" aria-expanded="false">
                         <span>
                             <i class="fas fa-home"></i>
                         </span>
@@ -30,8 +29,7 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link {{ Request::is('profile') ? 'active' : '' }}" href="{{ url('profile') }}"
-                        aria-expanded="false">
+                    <a class="sidebar-link {{ Request::is('profile') ? 'active' : '' }}" href="{{ url('profile') }}" aria-expanded="false">
                         <span>
                             <i class="fas fa-user"></i>
                         </span>
@@ -47,18 +45,10 @@
                     </a>
                 </li>
                 <li class="sidebar-item">
-                    <a class="sidebar-link" href="{{route('Pembimbing.dashboard')}}" aria-expanded="false">
-                        <span>
-                            <i class="fas fa-chalkboard-teacher"></i>
-                        </span>
-                        <span class="hide-menu">Progres Bimbingan</span>
-                    </a>
-                </li>
-                <li class="sidebar-item">
                     <a class="sidebar-link" href="{{route('prodi.penilaians.index')}}" aria-expanded="false">
                         <span>
-                            <i class="fas fa-calendar-alt"></i>
-                        </span>
+                            <i class="fas fa-clipboard-check"></i>
+                                                </span>
                         <span class="hide-menu">Setting Penilaian</span>
                     </a>
                 </li>
@@ -82,11 +72,10 @@
                         <span class="hide-menu">Pengajuan Kompre</span>
                     </a>
                 </li>
-                
+
                 <hr>
                 <li class="sidebar-item bg-danger rounded-1">
-                    <a class="sidebar-link text-white d-flex justify-content-center w-100" href="{{ url('logout') }}"
-                        aria-expanded="false">
+                    <a class="sidebar-link text-white d-flex justify-content-center w-100" href="{{ url('logout') }}" aria-expanded="false">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Logout</span>
                     </a>
@@ -96,6 +85,7 @@
         <!-- End Sidebar navigation -->
     </div>
 @endif
+
 
 @if (FiturHelper::showAdmin())
     <div>
@@ -148,7 +138,7 @@
                         </span>
                         <span class="hide-menu">Ruangan</span>
                     </a>
-  
+
                 <hr>
                 <li class="sidebar-item bg-danger rounded-1">
                     <a class="sidebar-link text-white d-flex justify-content-center w-100" href="{{ url('logout') }}"
@@ -174,7 +164,7 @@
                 <i class="ti ti-x fs-8"></i>
             </div>
         </div>
-        
+
         <!-- Sidebar navigation-->
         <nav class="sidebar-nav scroll-sidebar" data-simplebar="">
             <ul id="sidebarnav">
@@ -270,7 +260,7 @@
                         </span>
                         <span class="hide-menu">Seminar Proposal</span>
                     </a>
-                </li>     
+                </li>
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="{{route('mahasiswa_hasil_kompre')}}" aria-expanded="false">
                         <span>
@@ -279,9 +269,9 @@
                         <span class="hide-menu">Seminar komprehensif</span>
                     </a>
                 </li>
-                
+
                 <hr>
-                
+
                 <li class="sidebar-item bg-danger rounded-1">
                     <a class="sidebar-link text-white d-flex justify-content-center w-100" href="{{ url('logout') }}"
                         aria-expanded="false">
@@ -312,7 +302,7 @@
                 <li class="nav-small-cap">
                     <span class="hide-menu">Home</span>
                 </li>
-        
+
                 <li class="sidebar-item">
                     <a class="sidebar-link" href="{{ route('dosendashboard') }}"
                         aria-expanded="false">
@@ -388,7 +378,7 @@
                         <span class="hide-menu">Pengajuan Kompre</span>
                     </a>
                 </li>
-                
+
                 <li class="nav-small-cap">
                     <i class="fas fa-chalkboard-teacher nav-small-cap-icon fs-4"></i>
                     <span class="hide-menu">Penilaian Seminar </span>

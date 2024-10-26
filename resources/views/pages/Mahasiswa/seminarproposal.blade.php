@@ -76,13 +76,13 @@
         @if($proposal->validasi_pembimbing == 'diproses')
 
         <div class="alert alert-info mt-5 border-3 border-primary" role="alert">
-            <i class="fas fa-exclamation-circle" style="font-size: 1.5rem;"></i> 
+            <i class="fas fa-exclamation-circle" style="font-size: 1.5rem;"></i>
             <span style="font-size: 1.5rem;" class="fw-bold">Informasi</span> <br>
             🔄 Pengajuan Seminar Proposal Mu sedang Diproses. Hubungi Dosen Pembimbing Mu untuk memintak Validasi.
         </div>
     @elseif($proposal->validasi_pembimbing == 'valid')
         <div class="alert alert-success mt-5 border-4 border-success" role="alert">
-            <i class="fas fa-exclamation-circle" style="font-size: 1.5rem;"></i> 
+            <i class="fas fa-exclamation-circle" style="font-size: 1.5rem;"></i>
             <span style="font-size: 1.5rem; "class="fw-bold">Informasi</span> <br>
             <br>    ✅ Pengajuan Seminar Proposal Mu sudah tervalidasi oleh Dosen Pembimbing. Hubungi prodi mu untuk memintak jadwal Seminar mu.
         </div>
@@ -168,7 +168,7 @@
                     </a></td>
                     <td class="text-center"><a href="{{ asset('uploads/seminar_proposals/' . $proposal->Kartu_Bimbingan) }}" target="_blank"><i class="fas fa-file fa-2x text-success"></i>
                     </a></td>
-            
+
                     <td class="text-center">
                         @if($proposal->validasi_pembimbing == 'ditolak')
                             <span class="badge bg-danger badge-pill">{{ ucfirst($proposal->validasi_pembimbing) }}</span>
@@ -183,6 +183,9 @@
                             <span class="badge bg-danger badge-pill">{{ ucfirst($proposal->status_prodi) }}</span>
                         @elseif($proposal->status_prodi == 'diproses')
                             <span class="badge bg-secondary badge-pill">{{ ucfirst($proposal->status_prodi) }}</span>
+                            @elseif($proposal->status_prodi == 'ditolak')
+                            <span class="badge bg-danger badge-pill">{{ ucfirst($proposal->status_prodi) }}</span>
+
                             @elseif($proposal->status_prodi == 'lulus')
                             <span class="badge bg-success badge-pill">{{ ucfirst($proposal->status_prodi) }}</span>
                         @elseif($proposal->status_prodi == 'diterima')

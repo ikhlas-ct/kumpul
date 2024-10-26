@@ -18,7 +18,7 @@ class LoginController extends Controller
         return view('pages.login.index');
     }
     public function authenticate(Request $request)
-    {
+    {   
         $request->validate([
             'username' => 'required',
             'password' => 'required',
@@ -64,7 +64,7 @@ class LoginController extends Controller
             'auth' => 'The provided credentials do not match our records.',
         ])->withInput()->with('error', 'Username dan Password anda salah');
     }
-    
+
     public function logout(Request $request)
     {
         Auth::logout();

@@ -13,7 +13,7 @@
                 <div class="col-md-12">
                     <p><strong>Nama Mahasiswa:</strong> {{ $komprehensif->mahasiswaBimbingan->mahasiswa->nama }}</p>
                     <p><strong>NIM:</strong> {{ $komprehensif->mahasiswaBimbingan->mahasiswa->nim }}</p>
-                    <p><strong>Judul:</strong> {{ $komprehensif->mahasiswaBimbingan->acceptedJudulTugasAkhirs->judul }}</p>
+                    <p><strong>Judul:</strong> {{ $komprehensif->mahasiswaBimbingan->acceptedJudulTugasAkhirs->first()->judul ?? 'Belum ada judul' }}</p>
                     <p><strong>Jadwal Ujian:</strong> {{ \Carbon\Carbon::parse($komprehensif->tanggal_waktu)->format('M d, Y \a\t h:i A') }}</p>
                     <p><strong>Pembimbing:</strong> {{ $komprehensif->mahasiswaBimbingan->dosenPembimbing->dosen->nama ?? 'Tidak Ada Pembimbing' }}</p>
                     <p><strong>Penguji 1:</strong> {{ $komprehensif->dosenPenguji1->nama }}</p>
@@ -37,22 +37,21 @@
                             @enderror
                         </div>
                     @endforeach
-                    
+
                     </fieldset>
                 @endforeach
 
-                @if(auth()->id() === $komprehensif->dosen_penguji_1_id)
+                @if(auth()->user()->dosen->id === $komprehensif->dosen_penguji_1_id)
                     <div class="form-group mb-4">
                         <label for="komentar_penguji_1">Komentar Penguji 1</label>
                         <textarea name="komentar_penguji_1" id="komentar_penguji_1" class="form-control" rows="4">{{ old('komentar_penguji_1') ?? $komprehensif->komentar_penguji_1 }}</textarea>
                     </div>
-                @elseif(auth()->id() === $komprehensif->dosen_penguji_2_id)
+                @elseif(auth()->user()->dosen->id === $komprehensif->dosen_penguji_2_id)
                     <div class="form-group mb-4">
                         <label for="komentar_penguji_2">Komentar Penguji 2</label>
                         <textarea name="komentar_penguji_2" id="komentar_penguji_2" class="form-control" rows="4">{{ old('komentar_penguji_2') ?? $komprehensif->komentar_penguji_2 }}</textarea>
                     </div>
                 @endif
-
                 <div class="form-group d-flex justify-content-end">
                     <button type="submit" class="btn btn-primary">Simpan</button>
                 </div>

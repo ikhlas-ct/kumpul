@@ -8,7 +8,7 @@
         <div class="card overflow-hidden">
             <div class="card-body p-4">
                 <h5 class="card-title mb-9 fw-semibold">Dashboard Mahasiswa</h5>
-                
+
                 <!-- Progress Skripsi Saya Section -->
                 <div class="progress-skripsi">
                     <h6 class="mb-4">Progress Skripsi Saya</h6>
@@ -30,7 +30,7 @@
                                 <div class="step-number">4</div>
                                 <div class="step-label">Seminar Proposal</div>
                             </li>
-                            <li class="step {{ $logbooks->count() > 5 ? 'completed' : '' }}">
+                            <li class="step {{ $logbooks->count() > 4 ? 'completed' : '' }}">
                                 <div class="step-number">5</div>
                                 <div class="step-label">Logbook 4 dan 5</div>
                             </li>
@@ -44,7 +44,7 @@
                             </li>
                         </ul>
                     </div>
-                    
+
                     <div class="skripsi-details mt-4">
                         <div class="row">
                             <div class="col-md-6">

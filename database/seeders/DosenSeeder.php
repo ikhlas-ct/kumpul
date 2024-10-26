@@ -15,7 +15,7 @@ class DosenSeeder extends Seeder
     public function run()
     {
         // Membuat 10 data dummy untuk dosen
-        Dosen::factory()->count(10)->create();
-        
+        Dosen::factory()->count(5)->create();
+
     }
 }

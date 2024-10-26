@@ -30,8 +30,8 @@
                     <td class="text-center">{{ $index + 1 }}</td>
                     <td class="text-center">{{ $sempro->mahasiswaBimbingan->mahasiswa->nama }}</td>
                     <td class="text-center">
-                        @if($sempro->mahasiswaBimbingan->judulTugasAkhirs->isNotEmpty())
-                            {{ $sempro->mahasiswaBimbingan->judulTugasAkhirs->last()->judul }}
+                        @if($sempro->mahasiswaBimbingan->acceptedJudulTugasAkhirs->isNotEmpty())
+                            {{ $sempro->mahasiswaBimbingan->acceptedJudulTugasAkhirs->last()->judul }}
                         @else
                             Tidak ada judul tugas akhir
                         @endif

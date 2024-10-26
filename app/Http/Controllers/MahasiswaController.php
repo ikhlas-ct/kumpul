@@ -32,62 +32,52 @@ class MahasiswaController extends Controller
         // Mengambil data mahasiswa
         $mahasiswaId = auth()->user()->mahasiswa->id; // Pastikan user memiliki relasi ke mahasiswa
         $mahasiswa = Mahasiswa::find($mahasiswaId);
-    
+
         if (!$mahasiswa) {
             // Handle if mahasiswa not found
             return redirect()->back()->with('error', 'Mahasiswa not found');
         }
-    
+
         // Mengambil data bimbingan
         $mahasiswaBimbingans = MahasiswaBimbingan::where('mahasiswa_id', $mahasiswaId)
             ->with('dosenPembimbing') // Memuat relasi dosenPembimbing
             ->get();
-    
-        if ($mahasiswaBimbingans->isEmpty()) {
-            // Handle if no bimbingans found
-            return redirect()->back()->with('error', 'No bimbingans found');
-        }
-    
+
+        // if ($mahasiswaBimbingans->isEmpty()) {
+        //     // Handle if no bimbingans found
+        //     return redirect()->back()->with('error', 'No bimbingans found');
+        // }
+
         // Mengambil data judul terkait mahasiswa bimbingan yang diterima
         $judul = JudulTugasAkhir::whereIn('mahasiswa_bimbingan_id', $mahasiswaBimbingans->pluck('id'))
                                 ->where('status', 'diterima')
                                 ->first();
-    
+
         // Mengambil data logbook terkait mahasiswa bimbingan yang diterima
         $logbooks = Logbook::whereIn('mahasiswa_bimbingan_id', $mahasiswaBimbingans->pluck('id'))
                            ->where('status', 'Diterima')
                            ->get();
-    
+
         // Mengambil data konsultasi terkait mahasiswa bimbingan yang diterima
         $konsultasis = Konsultasi::whereIn('mahasiswa_bimbingan_id', $mahasiswaBimbingans->pluck('id'))
                                  ->where('status', 'Diterima')
                                  ->get();
-    
+
         // Mengambil data seminar proposal terkait mahasiswa bimbingan dengan status_prodi lulus
         $seminarProposal = SeminarProposal::whereIn('mahasiswa_bimbingan_id', $mahasiswaBimbingans->pluck('id'))
                                           ->where('status_prodi', 'lulus')
                                           ->first();
-    
+
         // Mengambil data seminar komprehensif terkait mahasiswa bimbingan dengan status_prodi lulus
         $seminarKomprehensif = SeminarKomprehensif::whereIn('mahasiswa_bimbingan_id', $mahasiswaBimbingans->pluck('id'))
                                                   ->where('status_prodi', 'lulus')
                                                   ->first();
-    
+
         return view('pages.Mahasiswa.dashboard', compact(
             'mahasiswa', 'mahasiswaBimbingans', 'judul', 'logbooks', 'konsultasis', 'seminarProposal', 'seminarKomprehensif'
         ));
     }
-    
 
-    public function konsul()
-    {
-        return view('pages.Mahasiswa.Konsultasi.konsultasi');
-    }
-
-    public function tgl_penting()
-    {
-        return view('pages.Mahasiswa.TanggalPenting.tanggal_penting');
-    }
 
     public function update(Request $request)
     {
@@ -183,34 +173,34 @@ class MahasiswaController extends Controller
     {
         // Ambil ID mahasiswa dari autentikasi
         $mahasiswaId = auth()->user()->mahasiswa->id;
-    
+
         // Ambil semua dosen pembimbing yang sudah dipilih oleh mahasiswa
         $pembimbingIds = MahasiswaBimbingan::where('mahasiswa_id', $mahasiswaId)->pluck('dosen_pembimbing_id')->toArray();
         // dd($pembimbingIds);
 
-    
+
         // Ambil role dosen pembimbing yang sudah dipilih
         $selectedPembimbingRoles = DosenPembimbing::whereIn('id', $pembimbingIds)->pluck('jenis_dosbing')->toArray();
         // dd($selectedPembimbingRoles);
-    
+
         // Validasi agar tidak memilih dua dosen pembimbing dengan role yang sama
         if (in_array($pembimbing->id, $pembimbingIds)) {
             return Redirect::back()->with('error', 'Anda sudah memilih dosen pembimbing ini sebelumnya.');
         }
-        
+
         if (in_array($pembimbing->jenis_dosbing, $selectedPembimbingRoles)) {
             return Redirect::back()->with('error', 'Anda sudah memilih dosen pembimbing dengan role yang sama.');
         }
-    
+
         // Validasi agar tidak memilih duplikat dosen pembimbing
-       
-    
+
+
         // Simpan relasi MahasiswaBimbingan
         MahasiswaBimbingan::Create(
             ['mahasiswa_id' => $mahasiswaId, 'dosen_pembimbing_id' => $pembimbing->id],
-            
+
         );
-    
+
         return Redirect::back()->with('success', 'Anda telah memilih dosen pembimbing.');
     }
 
@@ -218,16 +208,16 @@ class MahasiswaController extends Controller
     {
         // Ambil mahasiswa yang sedang login
         $mahasiswa = Auth::user()->mahasiswa;
-    
+
         // Ambil daftar pembimbing yang terkait dengan mahasiswa ini
         $mahasiswaBimbingans = $mahasiswa->mahasiswaBimbingans()->with('dosenPembimbing')->get();
-    
+
         // Tampilkan view dengan data pembimbing
         return view('pages.Mahasiswa.lihat_pembimbing', [
             'mahasiswaBimbingans' => $mahasiswaBimbingans
         ]);
     }
-    
+
     // Mahasiswa input judul tugas akhir
 
     public function input_judul()
@@ -240,7 +230,7 @@ class MahasiswaController extends Controller
     return view('pages.Mahasiswa.Inputjudulakhir', compact('judulTugasAkhirs', 'mahasiswaBimbingans'));
 }
 
-    
+
 
 public function store_judul(Request $request)
 {
@@ -251,16 +241,17 @@ public function store_judul(Request $request)
         'file_judul' => 'required|file|mimes:pdf',
     ]);
 
-    // Check if any judul tugas akhir with 'diterima' status exists for the specified mahasiswa_bimbingan_id
+    // Check if any judul tugas akhir with 'diproses' or 'diterima' status exists for the specified mahasiswa_bimbingan_id
     $existingJudul = JudulTugasAkhir::where('mahasiswa_bimbingan_id', $request->mahasiswa_bimbingan_id)
-                                    ->where('status', ['diproses','diterima'])
+                                    ->whereIn('status', ['diproses', 'diterima'])
                                     ->exists();
 
-    // If there's an existing 'diterima' judul, prevent new entry
+    // If there's an existing 'diproses' or 'diterima' judul, prevent new entry
     if ($existingJudul) {
         return redirect()->route('mahasiswa_input_judul')->withErrors(['status' => 'Anda sudah memiliki judul tugas akhir yang diproses atau diterima.']);
     }
 
+    // Handle file upload
     if ($request->hasFile('file_judul')) {
         $file = $request->file('file_judul');
         $filename = Str::random(10) . '_' . $file->getClientOriginalName();
@@ -269,14 +260,13 @@ public function store_judul(Request $request)
         return back()->withInput()->withErrors(['file_judul' => 'File tidak ditemukan atau tidak valid.']);
     }
 
-   
-
     // Create new JudulTugasAkhir
     JudulTugasAkhir::create([
         'mahasiswa_bimbingan_id' => $request->mahasiswa_bimbingan_id,
         'judul' => $request->judul,
         'deskripsi' => $request->deskripsi,
         'file_judul' => $filename,
+        'status' => 'diproses', // Assumed default status for a new entry
     ]);
 
     return redirect()->route('mahasiswa_input_judul')->with('success', 'Judul tugas akhir berhasil ditambahkan.');
@@ -306,7 +296,7 @@ public function destroy_judul($id)
 
 
 
-    
+
 
 // Mahasiswa logbok
 public function input_logbook()
@@ -343,6 +333,16 @@ public function logbook_store(Request $request)
     $mahasiswaBimbinganId = $request->mahasiswa_bimbingan_id;
     $judulTugasAkhir = $request->judul_tugas_akhir;
 
+    // Cek apakah ada logbook dengan status 'Diproses' untuk mahasiswa ini
+    $pendingOrProcessedLogbook = Logbook::where('mahasiswa_bimbingan_id', $mahasiswaBimbinganId)
+                                       ->where('status', 'Diproses')
+                                       ->exists();
+
+    if ($pendingOrProcessedLogbook) {
+        return redirect()->route('mahasiswa_input_logbook')->withErrors('Logbook Anda sudah ada yang sedang diproses.');
+    }
+
+    // Ambil logbook terakhir diterima dan yang pending/revisi
     $lastAcceptedLogbook = Logbook::where('mahasiswa_bimbingan_id', $mahasiswaBimbinganId)
                                 ->where('status', 'Diterima')
                                 ->orderBy('bab', 'desc')
@@ -377,6 +377,7 @@ public function logbook_store(Request $request)
         }
     }
 
+    // Buat logbook baru
     $logbook = new Logbook;
     $logbook->mahasiswa_bimbingan_id = $mahasiswaBimbinganId;
     $logbook->judul_tugas_akhir = $judulTugasAkhir;
@@ -436,6 +437,14 @@ public function destroy_logbook($id)
             'mahasiswa_bimbingan_id' => 'required|exists:mahasiswa_bimbingans,id',
             'topik' => 'required|string',
         ]);
+        $existingKonsultasi = Konsultasi::where('mahasiswa_bimbingan_id', $request->mahasiswa_bimbingan_id)
+        ->where('status', 'diproses') // Asumsikan ada kolom 'status'
+        ->exists();
+
+        if ($existingKonsultasi) {
+        return redirect()->back()->withErrors(['status' => 'Konsultasi Anda sudah ada yang sedang diproses.']);
+        }
+
 
         Konsultasi::create($request->all());
 
@@ -450,7 +459,7 @@ public function destroy_logbook($id)
         return redirect()->back()->with('success', 'Konsultasi berhasil dihapus.');
     }
 
- 
+
 
     public function create_proposal()
     {
@@ -458,7 +467,7 @@ public function destroy_logbook($id)
         $mahasiswaBimbinganIds = MahasiswaBimbingan::where('mahasiswa_id', $mahasiswaId)->pluck('id');
         $mahasiswaBimbingans = MahasiswaBimbingan::where('mahasiswa_id', $mahasiswaId)->get();
         $seminarProposals = SeminarProposal::whereIn('mahasiswa_bimbingan_id', $mahasiswaBimbinganIds)->get();
-    
+
         $acceptedProposal = SeminarProposal::where('status_prodi', 'diterima')
             ->with(['mahasiswaBimbingan.mahasiswa', 'dosenPenguji1', 'dosenPenguji2','ruangan'])
             ->first();
@@ -468,11 +477,11 @@ public function destroy_logbook($id)
         $judulTugasAkhir = JudulTugasAkhir::whereIn('mahasiswa_bimbingan_id', $mahasiswaBimbinganIds)
             ->where('status', 'diterima')
             ->first();
-    
+
         return view('pages.Mahasiswa.seminarproposal', compact('seminarProposals', 'mahasiswaBimbingans', 'acceptedProposal','judulTugasAkhir'));
     }
-    
-    
+
+
 
     public function store_proposal(Request $request)
     {
@@ -481,53 +490,53 @@ public function destroy_logbook($id)
             'file_KHS' => 'required|file|mimes:pdf,doc,docx',
             'Kartu_Bimbingan' => 'required|file|mimes:pdf,doc,docx',
         ]);
-    
+
         // Cek apakah sudah ada proposal yang diajukan oleh mahasiswa bimbingan ini
         $existingProposals = SeminarProposal::where('mahasiswa_bimbingan_id', $request->mahasiswa_bimbingan_id)
             ->whereIn('status_prodi', ['diterima', 'diproses', 'lulus'])
             ->get();
-    
+
         if ($existingProposals->isNotEmpty()) {
             return redirect()->route('mahasiswa_create_proposal')->withErrors('Proposal seminar sudah diajukan dan sedang dalam proses, telah diterima, atau telah lulus.');
         }
-    
+
         // Cek status logbook
         $logbooks = Logbook::where('mahasiswa_bimbingan_id', $request->mahasiswa_bimbingan_id)
             ->where('status', 'diterima')
             ->get();
-    
+
         // Cek jika logbook mencapai bab 3 yang diterima
         $logbookBab3 = $logbooks->first(function ($logbook) {
             return strpos($logbook->bab, '3') !== false;
         });
-    
+
         if (!$logbookBab3) {
             return redirect()->route('mahasiswa_create_proposal')->withErrors('Logbook belum mencapai bab 3 yang diterima.');
         }
-    
+
         $seminarProposal = new SeminarProposal;
         $seminarProposal->mahasiswa_bimbingan_id = $request->mahasiswa_bimbingan_id;
-    
+
         if ($request->hasFile('file_KHS')) {
             $file = $request->file('file_KHS');
             $filename = Str::random(10) . '_' . $file->getClientOriginalName();
             $file->move(public_path('uploads/seminar_proposals'), $filename);
             $seminarProposal->file_KHS = $filename;
         }
-    
+
         if ($request->hasFile('Kartu_Bimbingan')) {
             $file = $request->file('Kartu_Bimbingan');
             $filename = Str::random(10) . '_' . $file->getClientOriginalName();
             $file->move(public_path('uploads/seminar_proposals'), $filename);
             $seminarProposal->Kartu_Bimbingan = $filename;
         }
-    
+
         $seminarProposal->save();
-    
+
         return redirect()->route('mahasiswa_create_proposal')->with('success', 'Proposal seminar berhasil diajukan.');
     }
-    
-    
+
+
 
 public function destroy_proposal($id)
 {
@@ -543,7 +552,7 @@ public function destroy_proposal($id)
         if ($proposal->Kartu_Bimbingan && file_exists(public_path('uploads/seminar_proposals/' . $proposal->Kartu_Bimbingan))) {
             unlink(public_path('uploads/seminar_proposals/' . $proposal->Kartu_Bimbingan));
         }
-        
+
         // Menghapus proposal dari database
         $proposal->delete();
 
@@ -553,7 +562,7 @@ public function destroy_proposal($id)
     }
 }
 
-    
+
 
 
 
@@ -612,11 +621,11 @@ public function penilaian_proposal()
     }
 
     return view('pages.Mahasiswa.penilaiansempro', compact(
-        'seminarProposals', 
-        'mahasiswaBimbingans', 
-        'acceptedProposal', 
-        'judulTugasAkhir', 
-        'nilaiAkhirDosenPenguji1', 
+        'seminarProposals',
+        'mahasiswaBimbingans',
+        'acceptedProposal',
+        'judulTugasAkhir',
+        'nilaiAkhirDosenPenguji1',
         'nilaiAkhirDosenPenguji2',
         'statusLulus'
     ));
@@ -669,9 +678,9 @@ public function printProposal($id)
     }
 
     return view('pages.Mahasiswa.printsempro', compact(
-        'acceptedProposal', 
+        'acceptedProposal',
         'acceptedJudulTugasAkhir',
-        'nilaiAkhirDosenPenguji1', 
+        'nilaiAkhirDosenPenguji1',
         'nilaiAkhirDosenPenguji2',
         'nilaiRataRata',
         'statusLulus','totalBobotDosenPenguji1','totalNilaiDosenPenguji2','totalNilaiDosenPenguji1'
@@ -681,7 +690,7 @@ public function printProposal($id)
 
 
 
-   
+
 
 public function showkompre()
 {
@@ -694,7 +703,7 @@ public function showkompre()
         ->where('status_prodi',  'diterima')
         ->with(['mahasiswaBimbingan.mahasiswa', 'dosenPenguji1', 'dosenPenguji2', 'ruangan'])
         ->first();
-        
+
     $judulTugasAkhirs = JudulTugasAkhir::whereIn('mahasiswa_bimbingan_id', $mahasiswaBimbinganIds)
         ->where('status', 'diterima')
         ->get();
@@ -702,7 +711,7 @@ public function showkompre()
     $judulTugasAkhir = JudulTugasAkhir::whereIn('mahasiswa_bimbingan_id', $mahasiswaBimbinganIds)
         ->where('status', 'diterima')
         ->first();
-        
+
     return view('pages.Mahasiswa.seminarkomprehesif', compact('SeminarKomprehensifs', 'mahasiswaBimbingans', 'acceptedKomprehensif', 'judulTugasAkhir'));
 }
 
@@ -757,7 +766,7 @@ public function storekompre(Request $request)
         $file->move(public_path('uploads/seminar_komprehensif'), $filename);
         $seminarProposal->Kartu_Bimbingan = $filename;
     }
-    
+
     if ($request->hasFile('sertifikat_pkl')) {
         $file = $request->file('sertifikat_pkl');
         $filename = Str::random(10) . '_' . $file->getClientOriginalName();
@@ -797,7 +806,7 @@ public function destroykompre($id)
         }  if ($proposal->Kartu_Bimbingan && file_exists(public_path('uploads/seminar_komprehensif/' . $proposal->KRS))) {
             unlink(public_path('uploads/seminar_komprehensif/' . $proposal->KRS));
         }
-        
+
         // Menghapus proposal dari database
         $proposal->delete();
 
@@ -853,9 +862,9 @@ public function printKomprehensif($id)
     }
 
     return view('pages.Mahasiswa.printkompre', compact(
-        'acceptedProposal', 
+        'acceptedProposal',
         'acceptedJudulTugasAkhir',
-        'nilaiAkhirDosenPenguji1', 
+        'nilaiAkhirDosenPenguji1',
         'nilaiAkhirDosenPenguji2',
         'totalNilaiAkhr',
         'statusLulus',
@@ -874,7 +883,7 @@ public function penilaian_komprehensif()
     $seminarKomprehensif = SeminarKomprehensif::whereIn('mahasiswa_bimbingan_id', $mahasiswaBimbinganIds)->get();
 
     $acceptedProposal = SeminarKomprehensif::whereIn('mahasiswa_bimbingan_id', $mahasiswaBimbinganIds)
-        ->whereIn('status_prodi', ['diterima', 'direvisi']) // Adjusted to include both statuses
+        ->whereIn('status_prodi', ['diterima', 'direvisi','lulus']) // Adjusted to include both statuses
         ->with(['mahasiswaBimbingan.mahasiswa', 'dosenPenguji1', 'dosenPenguji2', 'ruangan', 'penilaianSeminarKomprehensif.pertanyaan'])
         ->first();
 
@@ -917,11 +926,11 @@ public function penilaian_komprehensif()
     }
 
     return view('pages.Mahasiswa.penilaiankompre', compact(
-        'seminarKomprehensif', 
-        'mahasiswaBimbingans', 
-        'acceptedProposal', 
-        'judulTugasAkhir', 
-        'nilaiAkhirDosenPenguji1', 
+        'seminarKomprehensif',
+        'mahasiswaBimbingans',
+        'acceptedProposal',
+        'judulTugasAkhir',
+        'nilaiAkhirDosenPenguji1',
         'nilaiAkhirDosenPenguji2',
         'nilaiRataRata',
         'statusLulus'

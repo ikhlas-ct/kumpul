@@ -44,19 +44,22 @@
             </thead>
             <tbody>
                 @foreach ($ruangans as $ruangan)
-                    <tr>
-                        <td class="text-center">{{ $loop->iteration }}</td>
-                        <td class="text-center">{{ $ruangan->nama }}</td>
-                        <td class="text-center">
-                            <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editRoomModal" data-id="{{ $ruangan->id }}" data-nama="{{ $ruangan->nama }}"><i class="fas fa-edit"></i> Edit</button>
-                            <form action="{{ route('admin.ruangans.delete', $ruangan->id) }}" method="POST" style="display: inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
+                <tr>
+                    <td class="text-center">{{ $loop->iteration }}</td>
+                    <td class="text-center">{{ $ruangan->nama }}</td>
+                    <td class="text-center">
+                        <button type="button" class="btn btn-primary btn-sm edit-room-button" data-bs-toggle="modal" data-bs-target="#editRoomModal" data-id="{{ $ruangan->id }}" data-nama="{{ $ruangan->nama }}">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <form action="{{ route('admin.ruangans.delete', $ruangan->id) }}" method="POST" style="display: inline-block;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
+
             </tbody>
         </table>
     </div>
@@ -93,12 +96,12 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form id="editRoomForm" action="{{ route('admin.ruangans.update', ['id' => $ruangan->id]) }}" method="POST">
+                <form id="editRoomForm" action="" method="POST">
                     @csrf
                     @method('PUT')
                     <div class="mb-3">
                         <label for="editNama" class="form-label">Nama Ruangan</label>
-                        <input type="text" class="form-control" id="editNama" name="nama" value="{{ $ruangan->nama }}" required>
+                        <input type="text" class="form-control" id="editNama" name="nama" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Update</button>
                 </form>
@@ -106,6 +109,7 @@
         </div>
     </div>
 </div>
+
 
 
 @endsection
@@ -127,7 +131,14 @@
             "dom": '<"top"lf>rt<"bottom"ip><"clear">'
         });
 
+        // JavaScript untuk mengisi data modal edit
+        $('.edit-room-button').on('click', function() {
+            var roomId = $(this).data('id');
+            var roomName = $(this).data('nama');
+
+            $('#editRoomForm').attr('action', '/admin/ruangans/update/' + roomId);
+            $('#editNama').val(roomName);
+        });
     });
 </script>
-
 @endsection

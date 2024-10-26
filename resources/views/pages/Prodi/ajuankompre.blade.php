@@ -29,8 +29,9 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>{{ $SeminarKomprehensif->mahasiswaBimbingan->mahasiswa->nama }}</td>
                         <td>{{ $SeminarKomprehensif->mahasiswaBimbingan->dosenpembimbing->dosen->nama }}</td>
-                        <td>{{ $SeminarKomprehensif->mahasiswaBimbingan->acceptedJudulTugasAkhirs->judul }}</td>
-                       
+                        <td class="text-center">{{ $SeminarKomprehensif->mahasiswaBimbingan->acceptedJudulTugasAkhirs->isNotEmpty() ? $SeminarKomprehensif->mahasiswaBimbingan->acceptedJudulTugasAkhirs->last()->judul : 'Tidak ada judul tugas akhir' }}</td>
+
+
                         <td>
                             <a href="{{ route('prodi.kompre.atur', ['id' => $SeminarKomprehensif->id]) }}" class="btn btn-success btn-sm">
                                 <i class="fa fa-check"></i> Atur Jadwal Seminar

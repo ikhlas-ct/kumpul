@@ -27,7 +27,7 @@ class MahasiswaFactory extends Factory
             'user_id' => $user->id,
             'nim' => $this->faker->unique()->numerify('##########'),
             'nama' => $this->faker->name,
-            'fakultas' => $this->faker->randomElement(['Teknik Informatika', 'Sistem Informasi', 'Teknik Elektro']),
+            'fakultas' =>'Sistem Informasi',
             'gambar' => $this->faker->imageUrl(200, 200, 'people'),
             'no_hp' => $this->faker->phoneNumber,
             'alamat' => $this->faker->address,

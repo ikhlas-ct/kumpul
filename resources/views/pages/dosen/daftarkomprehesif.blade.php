@@ -8,6 +8,11 @@
         <div class="card-header bg-primary text-white text-center">
             <h2>Daftar Ujian Komprehensif</h2>
         </div>
+        @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-bordered table-striped">
@@ -30,7 +35,7 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $seminar->mahasiswaBimbingan->mahasiswa->nama }}</td>
                                 <td>{{ $seminar->mahasiswaBimbingan->mahasiswa->nim }}</td>
-                                <td>{{ $seminar->mahasiswaBimbingan->acceptedJudulTugasAkhirs->judul }}</td>
+                                <td>{{ $seminar->mahasiswaBimbingan->acceptedJudulTugasAkhirs->first()->judul }}</td>
                                 <td>{{ $seminar->dosenPenguji1->nama ?? '-' }}</td>
                                 <td>{{ $seminar->dosenPenguji2->nama ?? '-' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($seminar->tanggal_waktu)->format('d M Y H:i') }}</td>
@@ -45,7 +50,7 @@
                                     <a href="{{ route('dosen_komprehensif.penilaian.create', $seminar->id) }}" class="btn btn-primary btn-sm">
                                         <i class="fas fa-edit"></i> Beri Penilaian Komprehensif
                                     </a>
-                                    
+
                                     @else
                                         <button class="btn btn-secondary btn-sm" disabled>
                                             <i class="fas fa-edit"></i> Tidak Aktif

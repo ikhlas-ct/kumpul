@@ -5,6 +5,7 @@ use App\Http\Controllers\ControllerPrint;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\DosenController;
 use App\Http\Controllers\KaprodiController;
+use App\Http\Controllers\MahasiswaBimbinganController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
@@ -49,9 +50,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     // ruangan
     Route::get('/ruangans', [AdminController::class, 'index_ruangan'])->name('admin.ruangans');
     Route::post('/ruangans/tambah', [AdminController::class, 'store_ruangan'])->name('admin.ruangans.tambah');
-    Route::put('/ruangans/{id}', [AdminController::class, 'update_ruangan'])->name('admin.ruangans.update');
+    Route::put('/admin/ruangans/update/{id}', [AdminController::class, 'update_ruangan'])->name('admin.ruangans.update');
     Route::delete('/ruangans/{id}', [AdminController::class, 'destroy_ruangan'])->name('admin.ruangans.delete');
-    
+
 });
 
 // // Kaprodi routes
@@ -95,7 +96,7 @@ Route::middleware(['auth', 'role:kaprodi'])->group(function () {
 
 
 
-    
+
 });
 
 // // Dosen routes
@@ -107,8 +108,8 @@ Route::middleware(['auth', 'role:dosen'])->group(function () {
     Route::get('/konsultasi', [DosenController::class, 'konsultasi_show'])->name('Halaman_Konsultasi');
     Route::put('/dosen/update/password', [DosenController::class, 'updatepassword'])->name('dosen.update.password');
 
-    Route::get('/dosen-pembimbing/students', [DosenController::class, 'showStudents'])->name('dosen_pembimbing.students');
-    Route::get('/mahasiswa/{id}', [DosenController::class, 'bimbinganshow'])->name('mahasiswa.detail');
+    Route::get('/dosen-pembimbing/students', [MahasiswaBimbinganController::class, 'showStudents'])->name('dosen_pembimbing.students');
+    Route::get('/dosen/mahasiswa/{id}', [MahasiswaBimbinganController::class, 'bimbingan_show'])->name('mahasiswa.detail');
 
 
     Route::get('/dosen/judul-tugas-akhir', [DosenController::class, 'showSubmittedTitles'])->name('dosen_pengajuan_judul');
@@ -117,7 +118,7 @@ Route::middleware(['auth', 'role:dosen'])->group(function () {
 
     Route::get('/dosen/konsultasi', [DosenController::class, 'rutekonsultasi'])->name('dosen.konsultasi.index');
     Route::post('/dosen/konsultasi/respond/{id}', [DosenController::class, 'respond'])->name('dosen.konsultasi.respond');
-    
+
     Route::get('/print-konsultasi-bimbingan/{mahasiswaBimbinganId}', [DosenController::class, 'printKonsultasiBimbingan'])->name('dosenprintkonsultasi');
 
     Route::get('/logbook/persetujuan', [DosenController::class, 'rutelogbook'])->name('dosen.logbook.index');
@@ -136,18 +137,18 @@ Route::middleware(['auth', 'role:dosen'])->group(function () {
     Route::get('seminar/{seminarProposal}/penilaian', [DosenController::class, 'createPenilaian'])->name('dosen_seminar.penilaian.create');
     Route::match(['post', 'put'], 'dosen/seminar/{seminarProposal}/penilaian', [DosenController::class, 'storePenilaian'])->name('dosen_seminar.penilaian.store');
 
-    
+
     Route::get('seminar-komprehesif', [DosenController::class, 'show_komprehensif'])->name('dosen_seminarkomprehensif.index');
     Route::get('komprehensif/{komprehensif}/penilaian', [DosenController::class, 'createPenilaianKompre'])->name('dosen_komprehensif.penilaian.create');
     Route::match(['post', 'put'], 'dosen/komprehensif/{komprehensif}/penilaian', [DosenController::class, 'storePenilaianKompre'])->name('dosen_komprehensif.penilaian.store');
-    
+
 
 
 });
 
 // // Mahasiswa routes
 Route::middleware(['auth','role:mahasiswa'])->group(function () {
-    Route::get('/mahasiswa/dashboard', [MahasiswaController::class, 'dashboard'])->name('mahasiswadashboard');
+    Route::get('/dashboard', [MahasiswaController::class, 'dashboard'])->name('mahasiswadashboard');
     Route::put('/passwordProdi/update', [MahasiswaController::class, 'updatePassword'])->name('passwordUpdateMahasiswa');
     // pemilihan pembimbing_mahasiswa
     Route::get('/pemilihan', [MahasiswaController::class, 'pemilihan_pembimbing'])->name('mahasiswa_halamanPemilihan');
@@ -202,7 +203,7 @@ Route::middleware(['auth','role:mahasiswa'])->group(function () {
 //     $user = Auth::user();
 //     if ($user) {
 //         return redirect()->route('dashboard');
- 
+
 //     }
 //     return redirect()->route('login');
 // });

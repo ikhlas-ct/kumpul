@@ -13,8 +13,8 @@
                 <div class="col-md-12">
                     <p><strong>Nama Mahasiswa:</strong> {{ $seminarProposal->mahasiswaBimbingan->mahasiswa->nama }}</p>
                     <p><strong>NIM:</strong> {{ $seminarProposal->mahasiswaBimbingan->mahasiswa->nim }}</p>
-                    <p><strong>Judul:</strong> {{ $seminarProposal->mahasiswaBimbingan->acceptedJudulTugasAkhirs->judul }}</p>
-                    <p><strong>Jadwal Ujian:</strong> {{ \Carbon\Carbon::parse($seminarProposal->jadwal_ujian)->format('M d, Y \a\t h:i A') }}</p>
+                    <p><strong>Judul:</strong> {{ $seminarProposal->mahasiswaBimbingan->acceptedJudulTugasAkhirs->first()->judul ?? 'Belum ada judul' }}</p>
+                    <p><strong>Jadwal Ujian:</strong> {{ \Carbon\Carbon::parse($seminarProposal->tanggal_waktu)->format('M d, Y \a\t h:i A') }}</p>
                     <p><strong>Pembimbing:</strong> {{ $seminarProposal->mahasiswaBimbingan->dosenPembimbing->dosen->nama ?? 'Tidak Ada Pembimbing' }}</p>
                     <p><strong>Penguji 1:</strong> {{ $seminarProposal->dosenPenguji1->nama }}</p>
                     <p><strong>Penguji 2:</strong> {{ $seminarProposal->dosenPenguji2->nama }}</p>
@@ -36,12 +36,12 @@
                     </fieldset>
                 @endforeach
 
-                @if(auth()->id() === $seminarProposal->dosen_penguji_1_id)
+                @if(auth()->user()->dosen->id === $seminarProposal->dosen_penguji_1_id)
                     <div class="form-group mb-4">
                         <label for="komentar_penguji_1">Komentar Penguji 1</label>
                         <textarea name="komentar_penguji_1" id="komentar_penguji_1" class="form-control" rows="4">{{ old('komentar_penguji_1') ?? $seminarProposal->komentar_penguji_1 }}</textarea>
                     </div>
-                @elseif(auth()->id() === $seminarProposal->dosen_penguji_2_id)
+                @elseif(auth()->user()->dosen->id === $seminarProposal->dosen_penguji_2_id)
                     <div class="form-group mb-4">
                         <label for="komentar_penguji_2">Komentar Penguji 2</label>
                         <textarea name="komentar_penguji_2" id="komentar_penguji_2" class="form-control" rows="4">{{ old('komentar_penguji_2') ?? $seminarProposal->komentar_penguji_2 }}</textarea>

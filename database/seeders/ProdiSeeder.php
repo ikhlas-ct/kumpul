@@ -13,7 +13,7 @@ class ProdiSeeder extends Seeder
      */
     public function run(): void
     {
-        Prodi::factory()->count(10)->create();
+        Prodi::factory()->count(1)->create();
 
     }
 }

@@ -21,9 +21,9 @@ class Logbook extends Model
     ];
     public function mahasiswaBimbingan()
     {
-        return $this->belongsTo(MahasiswaBimbingan::class);
+        return $this->belongsTo(MahasiswaBimbingan::class, 'mahasiswa_bimbingan_id');
     }
-    
+
 
 
 }

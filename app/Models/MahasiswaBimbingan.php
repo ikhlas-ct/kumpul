@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class MahasiswaBimbingan extends Model
-{   
+{
 
     use HasFactory;
     protected $table = 'mahasiswa_bimbingans';
@@ -20,11 +20,14 @@ class MahasiswaBimbingan extends Model
         return $this->belongsTo(DosenPembimbing::class, 'dosen_pembimbing_id');
     }
 
+
     // Relasi dengan model Mahasiswa
     public function mahasiswa()
     {
         return $this->belongsTo(Mahasiswa::class, 'mahasiswa_id');
     }
+
+
 
     public function konsultasis()
     {
@@ -35,7 +38,20 @@ class MahasiswaBimbingan extends Model
         return $this->hasMany(JudulTugasAkhir::class);
     }
     public function acceptedJudulTugasAkhirs()
+{
+    return $this->hasMany(JudulTugasAkhir::class, 'mahasiswa_bimbingan_id')
+                ->where('status', 'diterima');
+}
+
+    public function logbooks()
     {
-        return $this->HasOne(JudulTugasAkhir::class)->where('status', 'diterima');
+        return $this->hasMany(Logbook::class, 'mahasiswa_bimbingan_id'); // Update relationship
     }
+
+
+
+
+
+
+
 }

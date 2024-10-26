@@ -19,7 +19,7 @@
                 </div>
             @endif
 
-            <form action="{{ route('prodi.setuju.sempro', $SeminarKomprehensif->id) }}" method="POST">
+            <form action="{{ route('prodi.setuju.kompre', $SeminarKomprehensif->id) }}" method="POST">
                 @csrf
                 @method('PUT') <!-- Ubah method dari POST menjadi PUT -->
                 <div class="mb-3">
@@ -34,7 +34,7 @@
                         @endforeach
                     </select>
                 </div>
-                
+
                 <div class="mb-3">
                     <label for="dosen_penguji_2_id" class="form-label">Dosen Penguji 2</label>
                     <select name="dosen_penguji_2_id" id="dosen_penguji_2_id" class="form-select" required>
@@ -47,13 +47,13 @@
                         @endforeach
                     </select>
                 </div>
-            
+
                 <div class="mb-3">
                     <label for="tanggal_waktu" class="form-label">Tanggal dan Waktu</label>
                     <input type="datetime-local" name="tanggal_waktu" id="tanggal_waktu" class="form-control" required min="{{ date('Y-m-d\TH:i') }}"
                         value="{{ \Carbon\Carbon::parse($SeminarKomprehensif->tanggal_waktu)->format('Y-m-d\TH:i') }}">
                 </div>
-                
+
                 <div class="mb-3">
                     <label for="ruangan_id" class="form-label">Ruangan</label>
                     <select name="ruangan_id" id="ruangan_id" class="form-select" required>

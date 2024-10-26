@@ -1,3 +1,4 @@
+<!-- resources/views/pages/Prodi/ajuansempro.blade.php -->
 @extends('layout.master')
 
 @section('title', 'Validasi Seminar Proposal')
@@ -24,13 +25,13 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($seminarProposals as $seminarProposal)
+                @foreach ($seminarProposals as $index => $seminarProposal)
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $seminarProposal->mahasiswaBimbingan->mahasiswa->nama }}</td>
-                        <td>{{ $seminarProposal->mahasiswaBimbingan->dosenpembimbing->dosen->nama }}</td>
-                        <td>{{ $seminarProposal->mahasiswaBimbingan->acceptedJudulTugasAkhirs->judul }}</td>
-                        <td>
+                        <td class="text-center">{{ $index + 1 }}</td>
+                        <td class="text-center">{{ $seminarProposal->mahasiswaBimbingan->mahasiswa->nama }}</td>
+                        <td class="text-center">{{ $seminarProposal->mahasiswaBimbingan->dosenPembimbing->dosen->nama }}</td>
+                        <td class="text-center">{{ $seminarProposal->mahasiswaBimbingan->acceptedJudulTugasAkhirs->isNotEmpty() ? $seminarProposal->mahasiswaBimbingan->acceptedJudulTugasAkhirs->last()->judul : 'Tidak ada judul tugas akhir' }}</td>
+                        <td class="text-center">
                             <a href="{{ route('seminar-proposal.atur', ['id' => $seminarProposal->id]) }}" class="btn btn-success btn-sm">
                                 <i class="fa fa-check"></i> Atur Jadwal Seminar
                             </a>

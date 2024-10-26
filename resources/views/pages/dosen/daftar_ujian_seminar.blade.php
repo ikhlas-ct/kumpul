@@ -8,6 +8,11 @@
         <div class="card-header bg-primary text-white text-center">
             <h2>Daftar Seminar Proposal</h2>
         </div>
+        @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
         <div class="card-body">
             <div class="table-responsive">
                 <table id="seminarTable" class="table table-bordered table-striped">
@@ -30,7 +35,7 @@
                                 <td>{{ $index + 1 }}</td>
                                 <td>{{ $seminarProposal->mahasiswaBimbingan->mahasiswa->nama }}</td>
                                 <td>{{ $seminarProposal->mahasiswaBimbingan->mahasiswa->nim }}</td>
-                                <td>{{ $seminarProposal->mahasiswaBimbingan->acceptedJudulTugasAkhirs->judul }}</td>
+                                <td>{{ $seminarProposal->mahasiswaBimbingan->acceptedJudulTugasAkhirs->first()->judul }}</td>
                                 <td>{{ $seminarProposal->dosenPenguji1->nama ?? '-' }}</td>
                                 <td>{{ $seminarProposal->dosenPenguji2->nama ?? '-' }}</td>
                                 <td>{{ \Carbon\Carbon::parse($seminarProposal->tanggal_waktu)->format('d M Y H:i') }}</td>
@@ -87,8 +92,6 @@
 @endsection
 
 @section('scripts')
-
-
 <script>
     $(document).ready(function() {
         $('#seminarTable').DataTable({

@@ -21,8 +21,7 @@ class DosenPembimbing extends Model
 
     public function mahasiswaBimbingans()
     {
-        return $this->belongsToMany(MahasiswaBimbingan::class, 'mahasiswa_bimbingans', 'dosen_pembimbing_id')
-                    ->withTimestamps(); // sesuaikan dengan nama foreign key yang benar
+        return $this->hasMany(MahasiswaBimbingan::class, 'dosen_pembimbing_id');
     }
 
 }
