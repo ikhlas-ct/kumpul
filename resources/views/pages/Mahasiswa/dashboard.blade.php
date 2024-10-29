@@ -1,6 +1,6 @@
 @extends('layout.master')
 
-@section('title', 'Daftar Seminar Proposal')
+@section('title', 'Dashboard')
 
 @section('content')
 <div class="container mt-5">
